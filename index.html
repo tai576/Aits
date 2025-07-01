@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-Time Location Tracker</title>
+</head>
+<body>
+  <h2>Allow location access to track your position</h2>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    // Your Firebase config here
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqvuVgfLLDvf256OgBim83Qjk5KhuP5gU",
+      authDomain: "aits-9ba76.firebaseapp.com",
+      projectId: "aits-9ba76",
+      storageBucket: "aits-9ba76.firebasestorage.app",
+      messagingSenderId: "1079073300310",
+      appId: "1:1079073300310:web:9cbbfec82015a40ad100f7"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    const database = firebase.database();
+
+    function saveLocation(lat, lng) {
+      const locationRef = database.ref('locations').push();
+      locationRef.set({
+        latitude: lat,
+        longitude: lng,
+        timestamp: Date.now()
+      });
+    }
+
+    // Watch user location in real-time
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          console.log("Current Location:", lat, lng);
+          saveLocation(lat, lng);
+        },
+        error => {
+          console.error("Error getting location:", error);
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  </script>
+</body>
+</html>
